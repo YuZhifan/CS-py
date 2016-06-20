@@ -12,7 +12,7 @@ def broadcast(string,c):
     for cl in clist:
         #if(c!=cl):
             #print(cl)
-            cl.send(string.encode("utf8"))
+        cl.send(string.encode("utf8"))
 
 
 def client(c,addr):
@@ -40,16 +40,15 @@ def client(c,addr):
         string="验证失败"
     c.send(string.encode("utf8"))
     try:
-        string=c.recv(1024).decode("utf8")
-        while(string):
+        while True:
+            string=c.recv(1024).decode("utf8")
             print("【"+name+"】"+string);
             broadcast("【"+name+"】"+string,c)
-            string=c.recv(1024).decode("utf8")
-    except socket.error:
+    except (ConnectionAbortedError,ConnectionResetError):
         #print("wocuole")
         clist.remove(c)
-        broadcast("【"+name+"】退出",c)
-        print("【"+name+"】退出",c)
+        broadcast("【"+name+"】已退出",c)
+        print("【"+name+"】已退出")
     c.close()
     
 
