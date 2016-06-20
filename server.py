@@ -6,11 +6,12 @@ import socket               # 导入 socket 模块
 import threading
 
 clist=list()
+ulist=list()
 
 def broadcast(string,c):
     #print("broadcast")
     for cl in clist:
-        #if(c!=cl):
+        #if(c!=cl):   #是否广播给自己
             #print(cl)
         cl.send(string.encode("utf8"))
 
@@ -33,22 +34,36 @@ def client(c,addr):
         #print(flag)
     fo.close()
     if(flag==True):
-        string="【系统】欢迎登陆,"+name
+        string="【系统】欢迎登陆,"
         print("【"+name+"】"+"登入")
+        ulist.append(name)
         broadcast("【"+name+"】"+"登入",c)
     else:
         string="验证失败"
-    c.send(string.encode("utf8"))
+        #验证失败处理
+        c.send("已断开连接".encode("utf8"))
+        c.send("请关闭在开启".encode("utf8"))
+        c.close()
+        print("【"+name+"】密码验证错误")
     try:
         while True:
             string=c.recv(1024).decode("utf8")
-            print("【"+name+"】"+string);
-            broadcast("【"+name+"】"+string,c)
+            if(string=="showuser"):
+                ustr="【系统】在线用户："
+                for ul in ulist:
+                    ustr=ustr+"【"+ul+"】,"
+                c.send(ustr.encode("utf8"))
+                #print (clist)
+            else:
+                print("【"+name+"】"+string);
+                broadcast("【"+name+"】"+string,c)
     except (ConnectionAbortedError,ConnectionResetError):
         #print("wocuole")
         clist.remove(c)
+        ulist.remove(name)
         broadcast("【"+name+"】已退出",c)
         print("【"+name+"】已退出")
+    except OSError:pass
     c.close()
     
 
