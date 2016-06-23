@@ -46,11 +46,11 @@ print(s.recv(1024).decode("utf8"))
 root = Tk()             #初始化Tk()
 root.title("Client")
 root.geometry('400x300')
-root.resizable(width=False, height=False) #宽不可变, 高可变,默认为True
+root.resizable(width=False, height=False) #宽不可变, 高不可变,默认为True
 
-scrollbar = Scrollbar(root)
+scrollbar = Scrollbar(root)   #滚动条
 scrollbar.pack( side = RIGHT, fill=Y )
-text = Text(root,width=400,height=17,yscrollcommand = scrollbar.set)
+text = Text(root,width=400,height=17,yscrollcommand = scrollbar.set) #显示框
 text.pack(side=TOP)
 var = StringVar()
 def sendmessage():
@@ -62,9 +62,9 @@ def sendmessage():
         print("请关闭重启")
         display("请关闭重启\n")
         
-Button(root, text="send", command = sendmessage).pack(side=BOTTOM)
+Button(root, text="send", command = sendmessage).pack(side=BOTTOM) #按钮
 
-e = Entry(root, textvariable = var)
+e = Entry(root, textvariable = var)  #输入框
 e.pack(side=BOTTOM)
 
 var.set("hello")

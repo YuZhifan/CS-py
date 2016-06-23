@@ -5,8 +5,8 @@
 import socket               # 导入 socket 模块
 import threading
 
-clist=list()
-ulist=list()
+clist=list()    #存储在线客户端
+ulist=list()    #存储在线用户
 
 def broadcast(string,c):
     #print("broadcast")
@@ -17,15 +17,15 @@ def broadcast(string,c):
 
 
 def client(c,addr):
-    flag=False
-    name="null"
+    flag=False   #验证标示符,默认为False
+    name="null"     #用户名
     #print ('连接地址：', addr)
     namepwsd=c.recv(1024).decode("utf8")
     namepwsd=namepwsd.split("#")
     name=namepwsd[0]
     pwsd=namepwsd[1]
     fo = open(r"D:\GitHub\CS-py\pswd.txt", "r+")    #读取用户表
-    for  line in  fo.readlines():
+    for  line in  fo.readlines():   #账号密码验证
         lines=line.split("#")
         if((lines[0]==name)&(lines[1]==pwsd)&(flag==False)):
             flag=True
@@ -38,6 +38,7 @@ def client(c,addr):
         print("【"+name+"】"+"登入")
         ulist.append(name)
         broadcast("【"+name+"】"+"登入",c)
+        c.send(string.encode("utf8"))
     else:
         string="验证失败"
         #验证失败处理
